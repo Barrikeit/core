@@ -26,10 +26,6 @@ public class UserSessionService {
 
   private final UserSessionRepository repository;
 
-  // -------------------------------------------------------------------------
-  // Session creation
-  // -------------------------------------------------------------------------
-
   /**
    * Persists a new token session record.
    *
@@ -58,10 +54,6 @@ public class UserSessionService {
             .build());
   }
 
-  // -------------------------------------------------------------------------
-  // Session lookup
-  // -------------------------------------------------------------------------
-
   public List<UserSession> findUserSessions(UUID userId) {
     return repository.findAllByUserId(userId);
   }
@@ -78,10 +70,6 @@ public class UserSessionService {
             () -> new ValidationException("Session not found for userId=%s jti=%s", userId, jti));
   }
 
-  // -------------------------------------------------------------------------
-  // Session validation
-  // -------------------------------------------------------------------------
-
   /**
    * Returns true if a session record exists for the given userId and jti. A missing record means
    * the token has been revoked.
@@ -97,10 +85,6 @@ public class UserSessionService {
   public int activeSessions(UUID userId, TokenType tokenType) {
     return repository.countByUserIdAndTokenType(userId, tokenType.name());
   }
-
-  // -------------------------------------------------------------------------
-  // Session revocation
-  // -------------------------------------------------------------------------
 
   /**
    * Revokes an ACCESS/REFRESH token pair. Deletes both this token and its paired token from the

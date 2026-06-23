@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>dev.barrikeit</groupId>
+            <artifactId>validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.barrikeit</groupId>
             <artifactId>database-spring-api</artifactId>
         </dependency>
         <dependency>
@@ -44,6 +48,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

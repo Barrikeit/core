@@ -52,10 +52,6 @@ public abstract class BasicUserDetailsService implements UserDetailsService {
 
   protected final PasswordEncoder passwordEncoder;
 
-  // -------------------------------------------------------------------------
-  // Abstract contract — implement in child project
-  // -------------------------------------------------------------------------
-
   /**
    * Loads the user's security details by username (or email, depending on the app).
    *
@@ -70,10 +66,6 @@ public abstract class BasicUserDetailsService implements UserDetailsService {
    */
   protected abstract BasicUserDetails loadDetailsByCode(UUID userId);
 
-  // -------------------------------------------------------------------------
-  // UserDetailsService contract
-  // -------------------------------------------------------------------------
-
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return loadDetails(username);
@@ -86,10 +78,6 @@ public abstract class BasicUserDetailsService implements UserDetailsService {
   public BasicUserDetails loadUserByCode(UUID userId) {
     return loadDetailsByCode(userId);
   }
-
-  // -------------------------------------------------------------------------
-  // Authentication
-  // -------------------------------------------------------------------------
 
   /**
    * Verifies the supplied raw password against the stored encoded password.

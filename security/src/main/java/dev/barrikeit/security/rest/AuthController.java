@@ -13,18 +13,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Authentication endpoints — login, register, logout, and token refresh.
  *
- * <p>Child projects can expose this controller as-is by scanning the {@code
- * dev.barrikeit.security.rest} package, or they can extend it and override individual mappings.
+ * <p>Not a component-scanned {@code @RestController}: it is registered as a bean by {@code
+ * SecurityAutoConfiguration} via {@code @ConditionalOnBean(AuthService)} and {@code
+ * @ConditionalOnMissingBean(name="authController")}, so applications that expose their own {@code
+ * authController} bean automatically suppress this default. {@code @ResponseBody} +
+ * {@code @RequestMapping} keep it a valid MVC handler when registered as a plain bean.
  *
- * <p>The default base path is {@code /api/v1/auth}. Override with {@code @RequestMapping} in a
- * subclass if a different path is needed.
+ * <p>The default base path is {@code /api/v1/auth}.
  */
-@RestController
+@ResponseBody
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {

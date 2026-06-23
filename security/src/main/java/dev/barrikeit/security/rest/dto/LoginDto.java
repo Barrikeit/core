@@ -1,5 +1,8 @@
 package dev.barrikeit.security.rest.dto;
 
+import dev.barrikeit.validation.Alphanumeric;
+import dev.barrikeit.validation.SafeInput;
+import dev.barrikeit.validation.Sanitize;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginDto {
-  @NotBlank private String username;
-  @NotBlank private String password;
+  @Alphanumeric @NotBlank @Sanitize private String username;
+  @SafeInput @NotBlank @Sanitize private String password;
 }

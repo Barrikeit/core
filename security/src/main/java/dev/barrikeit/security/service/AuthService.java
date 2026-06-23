@@ -14,7 +14,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * Core authentication service — login, logout, refresh, and optional registration.
@@ -23,12 +22,16 @@ import org.springframework.stereotype.Service;
  * BasicUserDetailsService} and token operations to {@link JwtUtil}. Session persistence is handled
  * by {@link UserSessionService}.
  *
+ * <p>Not a component-scanned {@code @Service}: it is registered as a bean by {@code
+ * SecurityAutoConfiguration} via {@code @ConditionalOnBean(BasicUserDetailsService)} and {@code
+ * @ConditionalOnMissingBean(name="authService")}, so applications can supply their own {@code
+ * authService} bean (subclass or replacement) and core's backs off automatically.
+ *
  * <p>Registration is intentionally left as a no-op here — child projects that need registration
  * should override {@link #register(dev.barrikeit.security.rest.dto.RegisterDto)} in a subclass or
  * provide a separate registration flow.
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class AuthService {
 

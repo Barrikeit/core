@@ -1,5 +1,6 @@
 package dev.barrikeit.security.rest;
 
+import dev.barrikeit.security.config.SecurityExceptionHandler;
 import dev.barrikeit.web.filter.CorrelationIdFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
