@@ -3,6 +3,7 @@ package dev.barrikeit.security.interceptor;
 import dev.barrikeit.security.config.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnClass(name = "org.springframework.messaging.support.ChannelInterceptor")
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class AppHeaderValidatorInterceptor implements ChannelInterceptor {
 

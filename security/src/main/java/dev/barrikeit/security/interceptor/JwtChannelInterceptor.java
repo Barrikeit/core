@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;
@@ -35,6 +36,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnClass(name = "org.springframework.messaging.support.ChannelInterceptor")
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtChannelInterceptor implements ChannelInterceptor {
 

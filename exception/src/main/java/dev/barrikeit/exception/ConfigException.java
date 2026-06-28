@@ -1,6 +1,7 @@
 package dev.barrikeit.exception;
 
 public class ConfigException extends BaseException {
+
   public ConfigException(String message) {
     super(message);
   }

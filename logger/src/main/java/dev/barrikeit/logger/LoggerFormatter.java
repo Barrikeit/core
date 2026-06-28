@@ -2,12 +2,28 @@ package dev.barrikeit.logger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.stream.Collectors;
 
+/**
+ * Console / file log formatter.
+ *
+ * <p>Produces lines shaped like:
+ *
+ * <pre>
+ * 2026-06-28 10:11:12.345 INFO  --- [main] [correlation-id] dev.barrikeit.Main - message
+ * </pre>
+ *
+ * <p>Level names are normalised so that both the custom {@link LogLevel} names and the standard
+ * {@code java.util.logging} names emitted by the SLF4J→JUL bridge (slf4j-jdk14: SEVERE / WARNING /
+ * INFO / FINE / FINEST) render consistently as FATAL / ERROR / WARN / INFO / DEBUG / TRACE.
+ *
+ * <p>When {@code ansi} is false (file output) all colour escape codes are omitted.
+ */
 public class LoggerFormatter extends Formatter {
 
   private static final String FULL_RESET = "\u001B[0m";
@@ -25,14 +41,16 @@ public class LoggerFormatter extends Formatter {
 
   private DateTimeFormatter dateFormat;
   private int loggerNameWidth;
+  private final boolean ansi;
 
   public LoggerFormatter() {
-    this(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"), 30);
+    this(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"), 40, true);
   }
 
-  public LoggerFormatter(DateTimeFormatter dateFormat, int loggerNameWidth) {
+  public LoggerFormatter(DateTimeFormatter dateFormat, int loggerNameWidth, boolean ansi) {
     this.dateFormat = dateFormat;
     this.loggerNameWidth = loggerNameWidth;
+    this.ansi = ansi;
   }
 
   public void setDateFormat(DateTimeFormatter dateFormat) {
@@ -43,27 +61,47 @@ public class LoggerFormatter extends Formatter {
     this.loggerNameWidth = loggerNameWidth;
   }
 
-  private String getLevelString(LogRecord record) {
-    String levelName = record.getLevel().getName();
-    String color =
-        switch (levelName) {
-          case "SEVERE", "FATAL" -> BG_RED;
-          case "ERROR" -> RED;
-          case "WARN" -> YELLOW;
-          case "INFO" -> GREEN;
-          case "DEBUG" -> BLUE;
-          default -> GREY;
-        };
-    return color + String.format("%-5s", levelName) + BG_RESET + CUSTOM_RESET;
+  /** Maps custom and standard JUL level names to a consistent display label. */
+  private static String displayLevel(String levelName) {
+    return switch (levelName) {
+      case "FATAL" -> "FATAL";
+      case "SEVERE", "ERROR" -> "ERROR";
+      case "WARNING", "WARN" -> "WARN";
+      case "INFO", "CONFIG" -> "INFO";
+      case "FINE", "DEBUG" -> "DEBUG";
+      case "FINER", "FINEST", "TRACE" -> "TRACE";
+      default -> levelName;
+    };
+  }
+
+  private String colorFor(String displayLevel) {
+    return switch (displayLevel) {
+      case "FATAL" -> BG_RED;
+      case "ERROR" -> RED;
+      case "WARN" -> YELLOW;
+      case "INFO" -> GREEN;
+      case "DEBUG" -> BLUE;
+      default -> GREY;
+    };
+  }
+
+  private String paint(String color, String text) {
+    if (!ansi) {
+      return text;
+    }
+    String reset = color.equals(BG_RED) ? BG_RESET + CUSTOM_RESET : CUSTOM_RESET;
+    return color + text + reset;
   }
 
   @Override
   public String format(LogRecord record) {
-    String date = BLUE + dateFormat.format(LocalDateTime.now()) + CUSTOM_RESET;
-    String level = getLevelString(record);
+    String display = displayLevel(record.getLevel().getName());
+
+    String date = paint(BLUE, dateFormat.format(LocalDateTime.now()));
+    String level = paint(colorFor(display), String.format("%-5s", display));
     String thread = Thread.currentThread().getName();
     String logger =
-        CYAN + String.format("%-" + loggerNameWidth + "s", record.getLoggerName()) + CUSTOM_RESET;
+        paint(CYAN, String.format("%-" + loggerNameWidth + "s", record.getLoggerName()));
     String message = formatMessage(record);
 
     StringBuilder sb = new StringBuilder();
@@ -77,7 +115,11 @@ public class LoggerFormatter extends Formatter {
               .lines()
               .map(line -> "    " + line)
               .collect(Collectors.joining(System.lineSeparator()));
-      sb.append(RED).append(trace).append(System.lineSeparator()).append(FULL_RESET);
+      if (ansi) {
+        sb.append(RED).append(trace).append(System.lineSeparator()).append(FULL_RESET);
+      } else {
+        sb.append(trace).append(System.lineSeparator());
+      }
     }
 
     return sb.toString();

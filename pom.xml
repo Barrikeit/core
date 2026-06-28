@@ -22,6 +22,8 @@
         <module>utils</module>
         <module>validation</module>
         <module>web</module>
+        <module>filter-specification</module>
+        <module>service</module>
         <module>rest</module>
         <module>security</module>
     </modules>
@@ -121,6 +123,16 @@
             </dependency>
             <dependency>
                 <groupId>dev.barrikeit</groupId>
+                <artifactId>filter-specification</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.barrikeit</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.barrikeit</groupId>
                 <artifactId>security</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -191,6 +203,11 @@
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok-mapstruct-binding</artifactId>
                                 <version>${lombok-mapstruct-binding.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-configuration-processor</artifactId>
+                                <version>${spring.version}</version>
                             </path>
                         </annotationProcessorPaths>
                         <compilerArgs>

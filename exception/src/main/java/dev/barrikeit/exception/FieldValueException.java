@@ -1,6 +1,7 @@
 package dev.barrikeit.exception;
 
 public class FieldValueException extends BaseException {
+
   public FieldValueException(String message) {
     super(message);
   }

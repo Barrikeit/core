@@ -31,18 +31,18 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "user_sessions")
 public class UserSession extends GenericEntity<UUID> {
 
-  @Column(name = "user_id", nullable = false, updatable = false)
+  @Column(name = "id_user", nullable = false, updatable = false)
   private UUID userId;
 
   /** JWT ID (jti claim) — unique identifier for this token. */
-  @Column(name = "jti", nullable = false, unique = true)
+  @Column(name = "jti", length = 36, columnDefinition = "char(36)")
   private String jti;
 
   /**
    * JWT ID of the paired token. For an ACCESS token, this is the paired REFRESH token's jti. For a
    * REFRESH token, this is the paired ACCESS token's jti.
    */
-  @Column(name = "jti_pair", nullable = false)
+  @Column(name = "jti_pair", length = 36, columnDefinition = "char(36)")
   private String jtiPair;
 
   @Column(name = "issued_at", nullable = false)
